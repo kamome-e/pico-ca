@@ -14,7 +14,7 @@ CA_CN="KAMOME PicoCA `date +%Y%m%d%H%M%S`"
 
 function usage() {
     echo "Pico CA : The script of very small Certification Authority."
-    echo "version: 0.9.1"
+    echo "version: 0.9.2"
     echo "usage: $0 <command>"
     echo "command list"
     echo "    destroy       : Destroys the current CA."
