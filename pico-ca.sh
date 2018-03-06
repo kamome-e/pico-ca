@@ -5,7 +5,7 @@
 #               This program is distributed under the MIT license.
 
 KEYLEN=2048
-CA_CERT=ca.pem
+CA_CERT=ca.crt
 CA_KEY=ca.key
 CA_CN="KAMOME PicoCA `date +%Y%m%d%H%M%S`"
 
@@ -60,7 +60,7 @@ function server_cert() {
     0)
         openssl req -new -batch -nodes -newkey rsa:$KEYLEN -keyout $1.key -out $1.csr -subj /CN="$1" || exit
         chmod 600 $1.key
-        openssl x509 -days 3650 -req -CA $CA_CERT -CAkey $CA_KEY -set_serial $TIMESTAMP -in $1.csr -out $1.pem || exit
+        openssl x509 -days 3650 -req -CA $CA_CERT -CAkey $CA_KEY -set_serial $TIMESTAMP -in $1.csr -out $1.crt || exit
         ;;
     1)
         exit 1
@@ -87,7 +87,7 @@ function client_cert() {
     f=`echo "$1" | sed -e 's/[ 	]/_/g' | sed -e 's/[\/:]/-/g'`
     openssl req -new -batch -nodes -newkey rsa:$KEYLEN -keyout $f.key -out $f.csr -extensions usr_cert -subj /CN="$1" || exit
     chmod 600 $f.key
-    openssl x509 -days 3650 -req -CA $CA_CERT -CAkey $CA_KEY -set_serial $TIMESTAMP -in $f.csr -out $f.pem || exit
+    openssl x509 -days 3650 -req -CA $CA_CERT -CAkey $CA_KEY -set_serial $TIMESTAMP -in $f.csr -out $f.crt || exit
 }
 
 ########################################
@@ -124,7 +124,7 @@ destroy)
     # Destroy CA which exists in a current directory?
     rm -i $CA_CERT $CA_KEY
     if [ \! -e $CA_CERT -o \! -e $CA_KEY ]; then
-        rm -f *.key *.csr *.pem
+        rm -f *.key *.csr *.crt
     fi
     ;;
 *)
